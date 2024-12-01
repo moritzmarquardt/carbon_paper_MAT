@@ -1,15 +1,11 @@
 import matplotlib.pyplot as plt
+
 from MembraneAnalysisToolbox.DiffusionAnalysis import DiffusionAnalysis
 from MembraneAnalysisToolbox.MembraneStructures import (
     CubicMembrane,
     HexagonalMembrane,
     Solvent,
 )
-
-# print(
-#     "\nThis is the old script, please use the new one in '/bigpool/users/st166545/MembraneAnalysisToolbox/usage/interactive_DiffusionAnalysis.py'"
-# )
-# raise SystemExit
 
 print("\n\nInteractive Analysis of Diffusion in Membranes")
 print("===============================================")
