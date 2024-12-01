@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from MembraneAnalysisToolbox.MembraneStructures import (
     CubicMembrane,
     HexagonalMembrane,
@@ -86,7 +85,7 @@ PA = PoreAnalysis(
     topology_file=topol_file,
     trajectory_file=traj_file,
     membrane=structure,
-    analysis_max_step_size_ps=1000,
+    analysis_max_step_size_ps=200,  # use 200 since it was used in the analyses from the beginning and it is a good vale. We do not expect a transition to be faster than that.
     results_dir=results_dir,
     verbose=True,
 )

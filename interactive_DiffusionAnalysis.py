@@ -87,7 +87,7 @@ DA = DiffusionAnalysis(
     topology_file=topol_file,
     trajectory_file=traj_file,
     results_dir=results_dir,
-    analysis_max_step_size_ps=2,
+    analysis_max_step_size_ps=200,  # use 200 since it was used in the analyses from the beginning and it is a good vale. We do not expect a transition to be faster than that.
     verbose=True,
     membrane=structure,
 )
