@@ -96,7 +96,9 @@ if isinstance(PA.membrane, Solvent):
 else:
     PA.find_membrane_location()
     PA.print_membrane_location()
-    PA.verify_membrane_location()
+    fig_ml = PA.verify_membrane_location()
+    if want_to_save_results:
+        PA.save_fig_to_results(fig=fig_ml, name="membrane_location_verification")
 plt.show()
 
 wants_to_analyse = True
@@ -110,24 +112,33 @@ while wants_to_analyse:
     analysis_type = input("-> ")
     match analysis_type:
         case "A":
-            PA.analyseConstraints(
-                "resname C",
-                y_constraints=(25, 35),
+            fig_ac = PA.analyseConstraints(
+                "resname C",  # TODO: no hardcoded values
+                y_constraints=(
+                    25,
+                    35,
+                ),  # TODO use find pore to suggest values for the plot
                 z_constraints=PA.membrane.find_zConstraints(),
             )
+            if want_to_save_results:
+                PA.save_fig_to_results(fig=fig_ac, name="analyse_constraints_xyz")
             plt.show()
             print(
                 "\nWhat y_constraints do you want to use for the analysis? Example '25, 35'. This means that the analysis will be done between 25 and 35 Angstrom in the y direction."
             )
             y_constraints = input("-> ")
             y_constraints = y_constraints.split(", ")
-            edges = PA.calculateEffectivePoreSize(
-                solvent_selectors=["resname HEX and name C1"],
+            edges, fig_eps = PA.calculateEffectivePoreSize(
+                solvent_selectors=[
+                    "resname HEX and name C1"
+                ],  # TODO: no hardcoded values
                 z_constraints=PA.membrane.find_zConstraints(),
-                y_constraints=(25, 35),
+                y_constraints=(int(y_constraints[0]), int(y_constraints[1])),
                 strategy="intersection",
                 bins=50,
             )
+            if want_to_save_results:
+                PA.save_fig_to_results(fig=fig_eps, name="effective_pore_size")
             plt.show()
             print(edges)
             print(f"The effective pore size is: {edges[1] - edges[0]}")
@@ -137,12 +148,16 @@ while wants_to_analyse:
             )
             atoms = input("-> ")
             selectors = atoms.split(", ")
-            PA.analyseDensityNormed(
+            _, fig_dn = PA.analyseDensityNormed(
                 selectors=selectors,
                 z_range=PA.membrane.find_zConstraints(),
-                skip=10,
+                skip=1000,
                 bw=0.13,
             )
+            if want_to_save_results:
+                PA.save_fig_to_results(
+                    fig=fig_dn, name="density_normed_" + str(selectors)
+                )
             plt.show()
         case "C":
             print(
@@ -150,12 +165,14 @@ while wants_to_analyse:
             )
             atoms = input("-> ")
             selectors = atoms.split(", ")
-            PA.analyseDensity(
+            _, fig_d = PA.analyseDensity(
                 selectors=selectors,
                 z_range=PA.membrane.find_zConstraints(),
                 skip=10,
                 bw=0.13,
             )
+            if want_to_save_results:
+                PA.save_fig_to_results(fig=fig_d, name="density_" + str(selectors))
             plt.show()
         case "Q":
             break

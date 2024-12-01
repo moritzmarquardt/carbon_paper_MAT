@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from MembraneAnalysisToolbox.DiffusionAnalysis import DiffusionAnalysis
 from MembraneAnalysisToolbox.MembraneStructures import (
     CubicMembrane,
@@ -99,7 +98,9 @@ if isinstance(DA.membrane, Solvent):
 else:
     DA.find_membrane_location()
     DA.print_membrane_location()
-    DA.verify_membrane_location()
+    fig_ml = DA.verify_membrane_location()
+    if want_to_save_results:
+        DA.save_fig_to_results(fig=fig_ml, name="membrane_location_verification")
 plt.show()
 
 wants_to_analyse = True
@@ -127,7 +128,9 @@ while wants_to_analyse:
         DA.save_fig_to_results(fig=fig_CDF, name="diffusion_CDF_" + short)
         DA.save_fig_to_results(fig=fig_PDF, name="diffusion_PDF_" + short)
 
-    DA.plot_starting_points(selector)
+    fig_sp = DA.plot_starting_points(selector)
+    if want_to_save_results:
+        DA.save_fig_to_results(fig=fig_sp, name="starting_points_" + short)
 
     plt.show()
 
