@@ -1,3 +1,6 @@
+import os
+import time
+
 import matplotlib.pyplot as plt
 from MembraneAnalysisToolbox.DiffusionAnalysis import DiffusionAnalysis
 from MembraneAnalysisToolbox.MembraneStructures import (
@@ -10,28 +13,48 @@ print("\n\nInteractive Analysis of Diffusion in Membranes")
 print("===============================================")
 print("\nFirst enter the paths to the simulation files.")
 print("Remember to end the path with a '/'.")
-print("\nEnter the path to the topol.tpr file: ")
-topol_path = input("-> ")
-print("\nEnter Filename (press ENTER if it is topol.tpr): ")
-topol_file_name = input("-> ")
-if topol_file_name == "":
-    topol_file_name = "topol.tpr"
-topol_file = topol_path + topol_file_name
-print(
-    "\nEnter the path to the traj.xtc file (press ENTER if it is in the same path as topol.tpr): "
-)
-traj_path = input("-> ")
-if traj_path == "":
-    traj_path = topol_path
-print("\nEnter Filename (press ENTER if it is traj.xtc): ")
-traj_file_name = input("-> ")
-if traj_file_name == "":
-    traj_file_name = "traj.xtc"
-traj_file = traj_path + traj_file_name
+
+no_valid_topol_file = True
+while no_valid_topol_file:
+    print("\nEnter the path to the topol.tpr file: ")
+    topol_path = input("-> ")
+    print("\nEnter Filename (press ENTER if it is topol.tpr): ")
+    topol_file_name = input("-> ")
+    if topol_file_name == "":
+        topol_file_name = "topol.tpr"
+    topol_file = topol_path + topol_file_name
+    if os.access(topol_file, os.R_OK):  # check if file exists and is readable
+        no_valid_topol_file = False
+    else:
+        print("File not found or missing read permission. Please try again.")
+
+no_valid_traj_file = True
+while no_valid_traj_file:
+    print(
+        "\nEnter the path to the traj.xtc file (press ENTER if it is in the same path as topol.tpr): "
+    )
+    traj_path = input("-> ")
+    if traj_path == "":
+        traj_path = topol_path
+    print("\nEnter Filename (press ENTER if it is traj.xtc): ")
+    traj_file_name = input("-> ")
+    if traj_file_name == "":
+        traj_file_name = "traj.xtc"
+    traj_file = traj_path + traj_file_name
+    if os.access(traj_file, os.R_OK):  # check if file exists and is readable
+        no_valid_traj_file = False
+    else:
+        print("File not found or missing read permission. Please try again.")
 
 print("\nEntere the type of membrane in the Simulation. Possible types are:")
 print("'C': Cubic Membrane \n'H': Hexagonal Membrane \n'S': Solvent")
-membrane_type = input("-> ")
+no_valid_membrane_type = True
+while no_valid_membrane_type:
+    membrane_type = input("-> ")
+    if membrane_type in ["C", "H", "S"]:
+        no_valid_membrane_type = False
+    else:
+        print("Invalid input. Please try again.")
 
 
 match membrane_type:
@@ -96,7 +119,10 @@ print(DA)
 if isinstance(DA.membrane, Solvent):
     DA.print_membrane_location()
 else:
+    # measure start time to measure time
+    start = time.time()
     DA.find_membrane_location()
+    print(f"Time to find membrane location: {time.time() - start}s")
     DA.print_membrane_location()
     fig_ml = DA.verify_membrane_location()
     if want_to_save_results:
@@ -114,8 +140,10 @@ while wants_to_analyse:
     # perform the analysis (former method analyse_resname())
     print(f"\n{short} analysis")
 
+    start = time.time()
     DA.calc_passagetimes(selector)
     print(f"\t{short}-passages: " + str(len(DA.passageTimes[selector])))
+    print("Time to calculate passage times: ", time.time() - start)
     # DA.plot_passagetimedist(selector)
 
     if want_to_save_results:
