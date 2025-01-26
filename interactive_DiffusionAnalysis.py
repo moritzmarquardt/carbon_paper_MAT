@@ -57,6 +57,7 @@ while no_valid_membrane_type:
         print("Invalid input. Please try again.")
 
 
+analysis_max_step_size_ps = None
 match membrane_type:
     case "C":
         structure = CubicMembrane(
@@ -65,9 +66,10 @@ match membrane_type:
             cube_size=90,
             pore_radius=15,
         )
+        analysis_max_step_size_ps = 200  # use 200 since it was used in the analyses from the beginning and it is a good vale. We do not expect a transition to be faster than that.
     case "H":
         print(
-            "\nEnter the length of the membrane in Angstrom or press ENTER to select the default of 180: "
+            "\nEnter the length of the membrane in Angstrom or press ENTER to select the default of 180A: "
         )
         L = input("-> ")
         L = 180 if L == "" else int(L)
@@ -75,10 +77,11 @@ match membrane_type:
             selectors="resname C",
             L=L,
         )
+        analysis_max_step_size_ps = 200  # use 200 since it was used in the analyses from the beginning and it is a good vale. We do not expect a transition to be faster than that.
     case "S":
-        print("\nEnter the lower Z value: ")
+        print("\nEnter the lower Z value (in Angstrom): ")
         lowerZ = int(input("-> "))
-        print("\nEnter the upper Z value: ")
+        print("\nEnter the upper Z value (in Angstrom): ")
         upperZ = int(input("-> "))
         L = upperZ - lowerZ
         structure = Solvent(
@@ -86,6 +89,10 @@ match membrane_type:
             upperZ=upperZ,
             L=L,
         )
+        analysis_max_step_size_ps = (
+            2  # use 2 because the transitions in the solvent case are much faster
+        )
+        # TODO make this an interactive input
     case _:
         raise ValueError("Invalid input for membrane_type")
 
@@ -109,7 +116,7 @@ DA = DiffusionAnalysis(
     topology_file=topol_file,
     trajectory_file=traj_file,
     results_dir=results_dir,
-    analysis_max_step_size_ps=200,  # use 200 since it was used in the analyses from the beginning and it is a good vale. We do not expect a transition to be faster than that.
+    analysis_max_step_size_ps=analysis_max_step_size_ps,
     verbose=True,
     membrane=structure,
 )
