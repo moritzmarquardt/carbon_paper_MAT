@@ -47,8 +47,14 @@ match membrane_type:
         )
         L = input("-> ")
         L = 180 if L == "" else int(L)
+        # ask for selectors of membrane
+        print(
+            "\nEnter the selectors for the membrane atoms. Example: 'resname C' or 'resname C, resname CO'"
+        )
+        selectors = input("-> ")
+        selectors = selectors.split(", ")
         structure = HexagonalMembrane(
-            selectors="resname C",
+            selectors=selectors,
             L=L,
         )
     case "S":
@@ -128,10 +134,14 @@ while wants_to_analyse:
             )
             y_constraints = input("-> ")
             y_constraints = y_constraints.split(", ")
+            # ask for the solvent selectors
+            print(
+                "\nEnter the selectors for the solvent atoms. Example: 'resname HEX and name C1' or 'resname HEX and name C1, resname DOD and name C2'"
+            )
+            solvent_selectors = input("-> ")
+            solvent_selectors = solvent_selectors.split(", ")
             edges, fig_eps = PA.calculateEffectivePoreSize(
-                solvent_selectors=[
-                    "resname HEX and name C1"
-                ],  # TODO: no hardcoded values
+                solvent_selectors=solvent_selectors,
                 z_constraints=PA.membrane.find_zConstraints(),
                 y_constraints=(int(y_constraints[0]), int(y_constraints[1])),
                 strategy="intersection",
