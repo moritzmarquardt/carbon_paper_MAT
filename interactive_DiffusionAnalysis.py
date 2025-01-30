@@ -129,7 +129,7 @@ else:
     # measure start time to measure time
     start = time.time()
     DA.find_membrane_location()
-    print(f"Time to find membrane location: {time.time() - start}s")
+    print(f"Time to find membrane location: {int(time.time() - start)}s")
     DA.print_membrane_location()
     fig_ml = DA.verify_membrane_location()
     if want_to_save_results:
@@ -150,13 +150,32 @@ while wants_to_analyse:
     start = time.time()
     DA.calc_passagetimes(selector)
     print(f"\t{short}-passages: " + str(len(DA.passageTimes[selector])))
-    print("Time to calculate passage times: ", time.time() - start)
+    print(f"Time to calculate passage times: {int(time.time() - start)}s")
     # DA.plot_passagetimedist(selector)
 
     if want_to_save_results:
         DA.save_passage_times_in_ns_to_txt(selector, short + "_passagetimes_in_ns.txt")
 
-    DA.calc_diffusion(selector)
+    print(
+        "for the calculation of the Diffusio coefficient, a initial guess has to be made."
+    )
+    print(
+        f"The suggested guess (by approximation of the mean) is {DA.guess_D(selector)}"
+    )
+    print(
+        "It is important to check the plot of the passage time distribution and the fit to see if the global minimum of the fit was found."
+    )
+    D_guess = input(
+        f"Enter the guess for the diffusion coefficient (ENTER for using the suggested guess ({DA.guess_D(selector)})): "
+    )
+    if D_guess == "":
+        D_guess = DA.guess_D(selector)
+    else:
+        if "," in D_guess:
+            D_guess = float(D_guess.replace(",", "."))
+        else:
+            D_guess = float(D_guess)
+    DA.calc_diffusion(selector, D_guess)
     print(f"\t{short}-Diffusioncoefficient: " + str(DA.D[selector]).replace(".", ","))
     fig_CDF, fig_PDF = DA.plot_diffusion(selector)
     if want_to_save_results:
