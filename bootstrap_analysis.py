@@ -38,7 +38,9 @@ for path in paths:
 
     ffs, ffe = DA.calc_passagetimes(["resname HEX and name C1"])
     print("\tpassages: " + str(len(ffs)))
-    D_hex = DA.calc_diffusion(list(ffe - ffs))
+    D_hex = DA.calc_diffusion(
+        list(ffe - ffs), D_guess=DA.guess_D("resname HEX and name C1")
+    )
     print("\tDiffusioncoefficient: " + str(D_hex).replace(".", ","))
 
     # BOOTSTRAPPING Kri

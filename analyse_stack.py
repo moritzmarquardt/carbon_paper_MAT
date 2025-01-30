@@ -109,7 +109,7 @@ def analyse_resname(selector: str, short: str):
 
     DA.save_passage_times_in_ns_to_txt(selector, short + "_passagetimes_in_ns.txt")
 
-    DA.calc_diffusion(selector)
+    DA.calc_diffusion(selector, D_guess=DA.guess_D(selector))
     print(f"\t{short}-Diffusioncoefficient: " + str(DA.D[selector]).replace(".", ","))
 
     fig_diff = DA.plot_diffusion(selector)
