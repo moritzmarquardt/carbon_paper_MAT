@@ -157,7 +157,7 @@ while wants_to_analyse:
         DA.save_passage_times_in_ns_to_txt(selector, short + "_passagetimes_in_ns.txt")
 
     print(
-        "for the calculation of the Diffusio coefficient, a initial guess has to be made."
+        "For the calculation of the Diffusion coefficient, an initial guess has to be made."
     )
     print(
         f"The suggested guess (by approximation of the mean) is {DA.guess_D(selector)}"
