@@ -118,6 +118,9 @@ while wants_to_analyse:
     analysis_type = input("-> ")
     match analysis_type:
         case "A":
+            print(
+                "plot x, y, z histograms to validate the z-constraints and to find the y-constraints"
+            )
             fig_ac = PA.analyseConstraints(
                 "resname C",  # TODO: no hardcoded values
                 y_constraints=(
@@ -130,7 +133,7 @@ while wants_to_analyse:
                 PA.save_fig_to_results(fig=fig_ac, name="analyse_constraints_xyz")
             plt.show()
             print(
-                "\nWhat y_constraints do you want to use for the analysis? Example '25, 35'. This means that the analysis will be done between 25 and 35 Angstrom in the y direction."
+                "\nWhat y_constraints do you want to use for the analysis (in Angstrom)? Example '25, 35'. This means that the analysis will be done between 25 and 35 Angstrom in the y direction."
             )
             y_constraints = input("-> ")
             y_constraints = y_constraints.split(", ")
@@ -151,7 +154,8 @@ while wants_to_analyse:
                 PA.save_fig_to_results(fig=fig_eps, name="effective_pore_size")
             plt.show()
             print(edges)
-            print(f"The effective pore size is: {edges[1] - edges[0]}")
+            print(f"The found effective pore edges are: {edges} in Angstrom")
+            print(f"The effective pore size is: {edges[1] - edges[0]} Angstrom")
         case "B":
             print(
                 "\nWhich atoms would you like to consider for the normed density plot? Example: 'resname DOD and name C3' or 'resname C, resname DOD and name C2'"
